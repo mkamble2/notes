@@ -150,7 +150,7 @@ root@archiso ~ # mount --mkdir /dev/vda1 /mnt/boot/efi
 **Install the packages using pacstrap script;**
 
 ```
-root@archiso ~ # pacstrap -K /mnt base base-devel linux linux-lts linux-firmware bash-completion vim networkmanager lvm2
+root@archiso ~ # pacstrap -K /mnt base base-devel linux linux-lts linux-firmware bash-completion vim networkmanager lvm2 openssh
 ```
 
 **Generate fstab file;**
@@ -219,22 +219,22 @@ Generation complete.
 HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block lvm2 filesystems fsck)
 ```
 
-**recreate the initramfs image;**
+**Regenerate the initramfs;**
 
 ```
-[root@archiso /]# mkinitcpio -P linux linux-lts
+[root@archiso /]# mkinitcpio -p linux linux-lts
 ```
 
-**Install packages for grub and efi;**
+**Install grub packages;**
 
 ```
-[root@archiso /]# pacman -S grub efibootmgr
+[root@archiso /]# pacman -S grub efibootmgr os-prober
 ```
 
 **Install grub;**
 
 ```
-[root@archiso /]# grub-install --target=x86_64-efi --efi-directory=/boot/efi 
+[root@archiso /]# grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB 
 Installing for x86_64-efi platform.
 Installation finished. No error reported.
 ```
@@ -271,41 +271,11 @@ passwd: password updated successfully
 wheel ALL=(ALL:ALL) ALL
 ```
 
-**Enable NetworkManager service;**
+**Enable NetworkManager and ssh services;**
 
 ```
-[root@archiso /]# systemctl enable NetworkManager
+[root@archiso /]# systemctl enable NetworkManager.service
+[root@archiso /]# systemctl enable sshd.service
 ```
 
 **Exit the chroot environment by typing "exit" or pressing "Ctrl+d" and restart the machine by tying "reboot";**
-
-## Post Installation Configuration
-
-**Install yay;**
-
-```
-[arch@archlinux ~]$ sudo pacman -S --needed git
-[arch@archlinux ~]$ git clone https://aur.archlinux.org/yay.git
-[arch@archlinux ~]$ cd yay
-[arch@archlinux yay]$ makepkg -si
-```
-
-**Install cinnamon desktop environment;**
-
-```
-[arch@archlinux ~]# sudo pacman -S cinnamon nemo-fileroller 
-```
-
-**Install lightdm display manager;**
-
-```
-
-[arch@archlinux ~]# sudo pacman -Slightdm lightdm-gtk-greeter
-[arch@archlinux ~]# sudo systemctl enable lightdm
-```
-
-**Install aditional packages;**
-
-```
-[arch@archlinux ~]# sudo pacman -S gnome-terminal firefox vlc pulseaudio pulseaudio-alsa pavucontrol
-```
